@@ -19,10 +19,3 @@ An AI-powered finance research agent built with Python, Gemini, and Yahoo Financ
 - [ ] Build an AI agent
 - [ ] Add user interface
 
-## Setup
-
-Clone the repository:
-
-```bash
-git clone https://github.com/amateurcoder015/Finance-agent-v1.git
-cd Finance-agent-v1
