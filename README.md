@@ -1,21 +1,160 @@
-# AI Finance Agent
+# 📈 India Equity AI Finance Research Agent
 
-An AI-powered finance research agent built with Python, Gemini, and Yahoo Finance.
+An intelligent, full-stack financial research assistant for Indian stocks traded on the National Stock Exchange (NSE). Powered by **Google Gemini 3.5**, **FastAPI**, and **React + TypeScript + Tailwind CSS**, backed by real-time market data and news tools.
 
-## Current Features
+---
 
-- Gemini API integration
-- Real-time/most recent market data through Yahoo Finance
-- Indian stock support through Yahoo Finance tickers
+## 🌟 Key Features
 
-## Current Progress
+- **📊 Real-time NSE Market Data**: Retrieve live stock price, open/high/low/close, and trading volume via `yfinance`.
+- **📜 Historical Return Analysis**: Compute CAGR returns over custom timeframes (1mo, 3mo, 6mo, 1y, 2y, 5y).
+- **🏢 Fundamental Financial Metrics**: Market cap, trailing & forward P/E ratios, 52-week ranges, dividend yields, revenue, and profit margins.
+- **📰 Live Web News Search**: Search real-time financial developments and company announcements via DuckDuckGo News API.
+- **🎨 Modern Finance UI**:
+  - **Recent News Cards**: Visual cards displaying article summaries, source tags, publication dates, and direct links.
+  - **Historical Stat Grid**: Color-coded performance summary blocks highlighting percentage returns.
+  - **Comparison Tables**: Styled, striped tables comparing metrics across multiple companies.
+- **🔄 Session Persistence**: Persistent multi-turn chat sessions stored locally per session ID with a single-click "New Chat" reset.
+- **💡 Suggested Prompts**: Quick prompt shortcuts to explore market queries instantly.
 
-### Version 1
+---
 
-- [x] Connect Python to Gemini
-- [x] Retrieve stock data using Yahoo Finance
-- [ ] Connect Gemini with financial data
-- [ ] Add web search
-- [ ] Build an AI agent
-- [ ] Add user interface
+## 🏗️ Project Architecture
 
+```
+Finance-agent-v1/
+├── backend/
+│   ├── main.py          # FastAPI application & CORS configuration
+│   ├── agent.py         # Gemini session manager & system prompt instructions
+│   ├── tools.py         # yfinance & DDGS news search tools
+│   ├── requirements.txt # Python dependencies
+│   └── .env.example     # Backend environment template
+├── frontend/
+│   ├── src/
+│   │   ├── components/  # React UI components (ChatMessage, ChatInput, Sidebar, Header, Cards)
+│   │   ├── types.ts     # TypeScript interfaces
+│   │   ├── App.tsx      # Chat state & API integration
+│   │   └── main.tsx     # React entry point
+│   ├── package.json     # Node dependencies & Vite build scripts
+│   ├── vite.config.ts   # Vite configuration
+│   └── .env.example     # Frontend environment template
+└── README.md
+```
+
+---
+
+## 🚀 Step-by-Step Setup Guide
+
+### 📋 Prerequisites
+
+Ensure you have the following installed on your machine:
+- **Python**: 3.10 or higher
+- **Node.js**: 18.x or higher
+- **npm**: 9.x or higher
+- **Gemini API Key**: Obtain a free API key from [Google AI Studio](https://aistudio.google.com/).
+
+---
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/amateurcoder015/Finance-agent-v1.git
+cd Finance-agent-v1
+```
+
+---
+
+### 2️⃣ Backend Setup (FastAPI)
+
+1. Navigate to the `backend` directory:
+   ```bash
+   cd backend
+   ```
+
+2. Create and activate a Python virtual environment:
+   - **Linux / macOS**:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+   - **Windows**:
+     ```cmd
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+
+3. Install required Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Configure your environment variables:
+   - Create a `.env` file in the `backend` directory by copying `.env.example`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Open `.env` and add your Gemini API key:
+     ```env
+     GEMINI_API_KEY=your_actual_gemini_api_key_here
+     ```
+
+5. Start the FastAPI backend server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+   - The API will be live at `http://localhost:8000`.
+   - Test backend health: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+
+---
+
+### 3️⃣ Frontend Setup (React + Vite)
+
+1. Open a **new terminal tab** and navigate to the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install Node dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure frontend environment variables:
+   - Create a `.env` file in the `frontend` directory by copying `.env.example`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Ensure `VITE_API_BASE_URL` points to your backend server:
+     ```env
+     VITE_API_BASE_URL=http://localhost:8000
+     ```
+
+4. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+   - Open your browser and navigate to **`http://localhost:5173`**.
+
+---
+
+## 💬 Example Prompts to Try
+
+- 📈 **Stock Price**: *"What's the current stock price of Reliance?"*
+- ⚔️ **Comparison**: *"Compare TCS and Infosys fundamentals."*
+- ⏳ **Historical Performance**: *"How has HDFC Bank performed over the last year?"*
+- 📰 **Recent News**: *"Latest news on Adani Enterprises."*
+- 🏢 **Valuation**: *"Get stock fundamentals and P/E ratio for Larsen & Toubro."*
+
+---
+
+## 🔒 Security & Privacy Notice
+
+> [!IMPORTANT]
+> - Never commit your `.env` file or raw `GEMINI_API_KEY` to GitHub.
+> - `.gitignore` is pre-configured to exclude `.env`, `.venv`, and `node_modules`.
+
+---
+
+## ⚠️ Disclaimer
+
+*This application is built for research and educational purposes only. Financial analysis, metrics, and responses generated by the agent do not constitute investment advice or stock recommendations.*
