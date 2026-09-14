@@ -138,7 +138,3 @@ def get_stock_fundamentals(ticker: str):
         "profit": info.get("netIncomeToCommon"),
     }
 
-if __name__ == "__main__":
-    result = get_stock_fundamentals("RELIANCE.NS")
-
-    print(result)

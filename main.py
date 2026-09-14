@@ -27,17 +27,16 @@ tools = [
 ]
 
 
-question = input("What would you like to know about a stock? ")
-
-
-prompt = f"""
+chat = client.chats.create(
+    model="gemini-3.5-flash-lite",
+    config=types.GenerateContentConfig(
+        tools=tools,
+        system_instruction=
+f"""
 You are a financial research assistant focused on Indian stocks.
 
-The user asked:
 
-"{question}"
-
-You have access to two tools:
+You have access to five tools:
 
 1. get_stock_data
    - Use this when you need current or recent stock market data.
@@ -71,7 +70,7 @@ You have access to two tools:
 
 Decide which tools are necessary to answer the user's question.
 
-You may use one or both tools.
+You may use one or more tools when necessary.
 
 Tool selection rules:
 - If the user provides a company name and you need its stock data,
@@ -105,6 +104,9 @@ Tool selection rules:
 
 - If the user asks for both stock data AND recent/latest news,
   you MUST use BOTH get_stock_data AND search_web.
+- Do not use get_historical_stock_data unless the user explicitly
+  asks about historical performance or specifies a time period.
+- Do not assume a historical period when none is specified.
 
 
 
@@ -138,10 +140,6 @@ For recent news, use this format:
 - **Date:** [Publication date]
 - **URL:** [URL]
 
-When analyzing news:
-
-After gathering the information, provide a clear explanation
-for a beginner.
 
 When presenting historical performance, use this format:
 
@@ -155,21 +153,33 @@ When presenting historical performance, use this format:
 
 Explain what the return means for a beginner.
 
-Do not give a buy or sell recommendation.
+After gathering the information, provide a clear explanation
+for a beginner.
+
+When comparing multiple companies:
+
+- Present the important metrics in a comparison table.
+- Clearly identify which company has the higher or lower value for each metric.
+- For historical returns, identify which company performed better over the requested period.
+- For valuation metrics such as P/E, explain that a lower ratio does not automatically mean a company is better.
+- For dividend yield, explain which company currently provides the higher yield.
+- Do not declare one company universally "better" based on a single metric.
+- Highlight the most important differences between the companies.
+- Clearly distinguish factual data from interpretation.
 
 Do not give a buy or sell recommendation.
-"""
-
-
-chat = client.chats.create(
-    model="gemini-3.5-flash-lite",
-    config=types.GenerateContentConfig(
-        tools=tools
+""",
     )
 )
 
-response = chat.send_message(prompt)
+while True:
+    question = input("\nYou: ")
 
+    if question.lower() in ["exit", "quit"]:
+        print("Goodbye!")
+        break
 
-print("\n--- Finance Agent ---\n")
-print(response.text)
+    response = chat.send_message(question)
+
+    print("\n--- Finance Agent ---\n")
+    print(response.text)
