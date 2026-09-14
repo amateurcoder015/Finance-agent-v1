@@ -147,13 +147,7 @@ cd Finance-agent-v1
 
 ---
 
-## 🔒 Security & Privacy Notice
-
-> [!IMPORTANT]
-> - Never commit your `.env` file or raw `GEMINI_API_KEY` to GitHub.
-> - `.gitignore` is pre-configured to exclude `.env`, `.venv`, and `node_modules`.
-
----
+<img width="1440" height="784" alt="image" src="https://github.com/user-attachments/assets/4dcd2927-a311-4ed3-a72e-0c525118571e" />
 
 ## ⚠️ Disclaimer
 
