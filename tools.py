@@ -118,6 +118,27 @@ def get_historical_stock_data(ticker: str, period: str = "1mo"):
         ),
     }
 
+def get_stock_fundamentals(ticker: str):
+    """Get key fundamental metrics for an NSE stock."""
+
+    stock = yf.Ticker(ticker)
+
+    info = stock.info
+
+    return {
+        "ticker": ticker,
+        "company_name": info.get("longName"),
+        "market_cap": info.get("marketCap"),
+        "pe_ratio": info.get("trailingPE"),
+        "forward_pe": info.get("forwardPE"),
+        "52_week_high": info.get("fiftyTwoWeekHigh"),
+        "52_week_low": info.get("fiftyTwoWeekLow"),
+        "dividend_yield": info.get("dividendYield"),
+        "revenue": info.get("totalRevenue"),
+        "profit": info.get("netIncomeToCommon"),
+    }
+
 if __name__ == "__main__":
-    result = search_web("Reliance Industries", 7)
+    result = get_stock_fundamentals("RELIANCE.NS")
+
     print(result)

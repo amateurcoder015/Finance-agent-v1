@@ -6,7 +6,8 @@ from tools import (
     get_stock_data,
     search_web,
     find_stock_ticker,
-    get_historical_stock_data
+    get_historical_stock_data,
+    get_stock_fundamentals
 )
 
 #export GEMINI_API_KEY="YOUR_API_KEY_HERE"
@@ -21,7 +22,8 @@ tools = [
     get_stock_data,
     search_web,
     find_stock_ticker,
-    get_historical_stock_data
+    get_historical_stock_data,
+    get_stock_fundamentals
 ]
 
 
@@ -59,6 +61,14 @@ You have access to two tools:
    - It returns the starting price, ending price, and percentage return.
    - Use find_stock_ticker first if you need to identify the NSE ticker.
 
+  5. get_stock_fundamentals
+     - Use this when the user asks about company fundamentals or valuation.
+     - It requires an NSE ticker such as RELIANCE.NS or TCS.NS.
+     - It provides metrics such as market capitalization, P/E ratio,
+       forward P/E, 52-week high, 52-week low, dividend yield,
+       revenue, and net profit.
+     - Use find_stock_ticker first if you need to identify the NSE ticker.
+
 Decide which tools are necessary to answer the user's question.
 
 You may use one or both tools.
@@ -71,6 +81,10 @@ Tool selection rules:
 
 - If the user asks how a stock performed over a historical period,
   use get_historical_stock_data.
+
+  - If the user asks about fundamentals, valuation, financial metrics,
+    market capitalization, P/E ratio, revenue, or profit,
+    use get_stock_fundamentals.
 
 - Translate common time periods into the tool's period parameter:
   "last month" -> "1mo"
