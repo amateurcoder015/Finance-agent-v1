@@ -4,10 +4,13 @@ from datetime import datetime, timedelta
 
 
 def get_stock_data(ticker: str):
-    """Get the latest stock market data for an NSE stock."""
+    """Get the latest available stock market data for an NSE stock."""
 
     stock = yf.Ticker(ticker)
-    data = stock.history(period="1d")
+
+    # Use a larger period so the tool can find the
+    # most recent trading day even if today's data is unavailable.
+    data = stock.history(period="5d")
 
     if data.empty:
         return f"No stock data found for {ticker}"
@@ -16,6 +19,7 @@ def get_stock_data(ticker: str):
 
     return {
         "ticker": ticker,
+        "date": str(data.index[-1].date()),
         "open": round(float(latest["Open"]), 2),
         "high": round(float(latest["High"]), 2),
         "low": round(float(latest["Low"]), 2),
@@ -23,13 +27,11 @@ def get_stock_data(ticker: str):
         "volume": int(latest["Volume"]),
     }
 
-
-
 def search_web(query: str, recent_days: int = 7):
     """Search for recent news about a company or financial topic."""
 
     results = DDGS().news(
-        query,
+        f'"{query}"',
         timelimit=f"{recent_days}d",
         max_results=8
     )
@@ -38,18 +40,33 @@ def search_web(query: str, recent_days: int = 7):
 
     cleaned_results = []
 
+    query_words = query.lower().split()
+
     for result in results:
         article_date = datetime.fromisoformat(
             result["date"].replace("Z", "+00:00")
         )
 
-        if article_date >= cutoff_date:
-            cleaned_results.append({
-                "date": result["date"],
-                "source": result["source"],
-                "title": result["title"],
-                "summary": result["body"],
-                "url": result["url"]
-            })
+        text = (
+            result["title"] + " " +
+            result["body"]
+        ).lower()
+
+        # Make sure the article is recent
+        if article_date < cutoff_date:
+            continue
+
+        # Make sure the article actually mentions the company
+        if not all(word in text for word in query_words):
+            continue
+
+        cleaned_results.append({
+            "date": result["date"],
+            "source": result["source"],
+            "title": result["title"],
+            "summary": result["body"],
+            "url": result["url"]
+        })
 
     return cleaned_results
+
