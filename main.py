@@ -2,7 +2,7 @@ from google import genai
 from google.genai import types
 import os
 
-from tools import get_stock_data, search_web
+from tools import get_stock_data, search_web, find_stock_ticker
 
 #export GEMINI_API_KEY="YOUR_API_KEY_HERE"
 #echo $GEMINI_API_KEY
@@ -14,7 +14,8 @@ client = genai.Client(
 
 tools = [
     get_stock_data,
-    search_web
+    search_web,
+    find_stock_ticker
 ]
 
 
@@ -38,22 +39,21 @@ You have access to two tools:
    - Use this when you need recent news, announcements, events,
      or other information from the web.
 
-Common NSE ticker mappings:
-
-Reliance Industries -> RELIANCE.NS
-Tata Consultancy Services -> TCS.NS
-Infosys -> INFY.NS
-HDFC Bank -> HDFCBANK.NS
-ICICI Bank -> ICICIBANK.NS
-Tata Motors -> TATAMOTORS.NS
-ITC -> ITC.NS
-State Bank of India -> SBIN.NS
+3. find_stock_ticker
+   - Use this when you need to convert a company name into its NSE ticker.
+   - For example, "Larsen & Toubro" may return "LT.NS".
+   - Use this before get_stock_data when the user provides a company
+     name but you do not already know its NSE ticker.
 
 Decide which tools are necessary to answer the user's question.
 
 You may use one or both tools.
 
 Tool selection rules:
+- If the user provides a company name and you need its stock data,
+  use find_stock_ticker first to identify the NSE ticker.
+
+- After finding the ticker, use get_stock_data to retrieve its market data.
 
 - If the user asks about current/latest/recent stock price or market
   data, you MUST use get_stock_data.
@@ -63,6 +63,8 @@ Tool selection rules:
 
 - If the user asks for both stock data AND recent/latest news,
   you MUST use BOTH get_stock_data AND search_web.
+
+
 
 Do not answer a news request using only your general knowledge.
 Use search_web to obtain the recent information.

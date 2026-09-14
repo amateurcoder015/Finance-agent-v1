@@ -70,3 +70,25 @@ def search_web(query: str, recent_days: int = 7):
 
     return cleaned_results
 
+def find_stock_ticker(company_name: str):
+    """Find the NSE ticker symbol for a company."""
+
+    search_query = f"{company_name} NSE ticker Yahoo Finance"
+
+    results = DDGS().text(
+        search_query,
+        max_results=5
+    )
+
+    for result in results:
+        title = result["title"]
+        body = result["body"]
+
+        if "Yahoo Finance" in title and ".NS" in title:
+            ticker_start = title.find("(") + 1
+            ticker_end = title.find(".NS") + 3
+
+            return title[ticker_start:ticker_end]
+
+    return f"Could not find NSE ticker for {company_name}"
+
