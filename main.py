@@ -2,7 +2,12 @@ from google import genai
 from google.genai import types
 import os
 
-from tools import get_stock_data, search_web, find_stock_ticker
+from tools import (
+    get_stock_data,
+    search_web,
+    find_stock_ticker,
+    get_historical_stock_data
+)
 
 #export GEMINI_API_KEY="YOUR_API_KEY_HERE"
 #echo $GEMINI_API_KEY
@@ -15,7 +20,8 @@ client = genai.Client(
 tools = [
     get_stock_data,
     search_web,
-    find_stock_ticker
+    find_stock_ticker,
+    get_historical_stock_data
 ]
 
 
@@ -44,6 +50,14 @@ You have access to two tools:
    - For example, "Larsen & Toubro" may return "LT.NS".
    - Use this before get_stock_data when the user provides a company
      name but you do not already know its NSE ticker.
+    
+4. get_historical_stock_data
+   - Use this when the user asks about stock performance over a
+     period of time.
+   - It can retrieve historical performance for periods such as:
+     1mo, 3mo, 6mo, 1y, 2y, 5y.
+   - It returns the starting price, ending price, and percentage return.
+   - Use find_stock_ticker first if you need to identify the NSE ticker.
 
 Decide which tools are necessary to answer the user's question.
 
@@ -54,6 +68,20 @@ Tool selection rules:
   use find_stock_ticker first to identify the NSE ticker.
 
 - After finding the ticker, use get_stock_data to retrieve its market data.
+
+- If the user asks how a stock performed over a historical period,
+  use get_historical_stock_data.
+
+- Translate common time periods into the tool's period parameter:
+  "last month" -> "1mo"
+  "3 months" -> "3mo"
+  "6 months" -> "6mo"
+  "last year" -> "1y"
+  "2 years" -> "2y"
+  "5 years" -> "5y"
+
+- If the user asks for current data AND historical performance,
+  use both get_stock_data and get_historical_stock_data.
 
 - If the user asks about current/latest/recent stock price or market
   data, you MUST use get_stock_data.
@@ -98,9 +126,22 @@ For recent news, use this format:
 
 When analyzing news:
 
-
 After gathering the information, provide a clear explanation
 for a beginner.
+
+When presenting historical performance, use this format:
+
+### Historical Performance
+
+- **Period:** [period]
+- **Starting Price:** ₹[price]
+- **Ending Price:** ₹[price]
+- **Return:** [percentage]%
+- **Period:** [start date] to [end date]
+
+Explain what the return means for a beginner.
+
+Do not give a buy or sell recommendation.
 
 Do not give a buy or sell recommendation.
 """

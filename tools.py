@@ -32,7 +32,6 @@ def search_web(query: str, recent_days: int = 7):
 
     results = DDGS().news(
         f'"{query}"',
-        timelimit=f"{recent_days}d",
         max_results=8
     )
 
@@ -92,3 +91,33 @@ def find_stock_ticker(company_name: str):
 
     return f"Could not find NSE ticker for {company_name}"
 
+
+def get_historical_stock_data(ticker: str, period: str = "1mo"):
+    """Get historical stock prices for an NSE stock."""
+
+    stock = yf.Ticker(ticker)
+
+    data = stock.history(period=period)
+
+    if data.empty:
+        return f"No historical stock data found for {ticker}"
+
+    start_price = float(data["Close"].iloc[0])
+    end_price = float(data["Close"].iloc[-1])
+
+    return {
+        "ticker": ticker,
+        "period": period,
+        "start_date": str(data.index[0].date()),
+        "end_date": str(data.index[-1].date()),
+        "start_price": round(start_price, 2),
+        "end_price": round(end_price, 2),
+        "return_percent": round(
+            ((end_price - start_price) / start_price) * 100,
+            2
+        ),
+    }
+
+if __name__ == "__main__":
+    result = search_web("Reliance Industries", 7)
+    print(result)
